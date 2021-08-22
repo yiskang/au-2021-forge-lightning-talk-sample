@@ -1,0 +1,27 @@
+{
+  "name": "au-2021-forge-lightning-talk-sample",
+  "version": "1.0.0",
+  "description": "This sample is for a Forge lightning talk section: `Aggregation, linked models and group: advanced Revit model viewing in Forge` in AU 2021.",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js"
+  },
+  "keywords": [
+    "autodesk",
+    "forge",
+    "viewer",
+    "revit",
+    "aggregation",
+    "link",
+    "group"
+  ],
+  "author": "yiskang <eason.kang@autodesk.com>",
+  "license": "MIT",
+  "dependencies": {
+    "async": "^3.2.1",
+    "forge-apis": "^0.8.6",
+    "guid": "^0.0.12",
+    "json-server": "^0.16.3",
+    "multer": "^1.4.3"
+  }
+}
