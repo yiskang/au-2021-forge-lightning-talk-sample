@@ -51,6 +51,10 @@ body {
 	margin-top: 3px
 }
 
+.jstree-default-dark .jstree-anchor {
+    color: white;
+}
+
 .adsk-viewing-viewer.dark-theme .adsk-icon-documentModels {
 	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E %3Ctitle%3Efolder-16%3C/title%3E %3Cg id='assets'%3E %3Cg id='Layer_201' data-name='Layer%25201'%3E %3Cpath fill='%23F4F4F4' d='M0,2.5V4H6.34l1-1-1-1H.5A.5.5,0,0,0,0,2.5ZM0,5v8a1,1,0,0,0,1,1H14a1,1,0,0,0,1-1V4a1,1,0,0,0-1-1H9L7,5Z'/%3E %3C/g%3E %3C/g%3E %3C/svg%3E")
 }

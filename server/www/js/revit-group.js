@@ -285,7 +285,8 @@
                         multiple: false,
                         themes: {
                             icons: false,
-                            // name: 'default-dark'
+                            dots: false,
+                            name: 'default-dark'
                         }
                     },
                     sort: function (a, b) {
