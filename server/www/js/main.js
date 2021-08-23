@@ -25,6 +25,6 @@ $(document).ready(function () {
         };
 
         destroyViewer();
-        launchViewer('dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6ZXh0cmFjdC1hdXRvZGVzay1pby0yMDE3bGt3ZWo3eHBiZ3A2M3g0aGwzMzV5Nm0yNm9ha2dnb2YvcmFjX2Jhc2ljX3NhbXBsZV9wcm9qZWN0LnJ2dA', null, viewerOptions);
+        launchViewer('dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6ZXh0cmFjdC1hdXRvZGVzay1pby0yMDE3bGt3ZWo3eHBiZ3A2M3g0aGwzMzV5Nm0yNm9ha2dnb2YvYXBhcnRtZW50LWdyb3VwLXNhbXBsZS5ydnQ', null, viewerOptions);
     });
 });

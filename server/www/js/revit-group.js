@@ -24,8 +24,8 @@
             super(viewer, options);
         }
 
-        userFunction(pdb) {
-            console.log(pdb);
+        userFunction(pdb, viewableId) {
+            console.log(pdb, viewableId);
 
             let _nameAttrId = pdb.getAttrName();
             let _internalViewableInAttrId = pdb.getAttrViewableIn();
@@ -117,13 +117,17 @@
                     // The word "Property" and "Attribute" are used interchangeably.
                     if (attrId === _internalMemberRefAttrId) {
                         const value = pdb.getAttrValue(attrId, valId);
+                        const props = pdb.getObjectProperties(value);
                         console.log(value, pdb.getObjectProperties(value));
+                        if (props.name.includes('Room Tag'))
+                            return;
 
                         pdb.enumObjectProperties(value, function (childAttrId, childAttrValId) {
                             if (childAttrId === _internalViewableInAttrId) {
                                 const childAttrVal = pdb.getAttrValue(childAttrId, childAttrValId);
                                 console.log(value, childAttrVal);
-                                if (!children.includes(value)) {
+
+                                if ((childAttrVal == viewableId) && (!children.includes(value))) {
                                     children.push(value);
                                     return true;
                                 }
@@ -161,7 +165,9 @@
             try {
                 const fucString = this.userFunction.toString();
                 const userFunction = `function ${fucString}`;
-                return await this.viewer.model.getPropertyDb().executeUserFunction(userFunction);
+                const model = this.viewer.model;
+                const viewableId = model.getDocumentNode().data['viewableID'];
+                return await model.getPropertyDb().executeUserFunction(userFunction, viewableId);
             } catch (ex) {
                 console.error(ex);
                 return null;
@@ -274,6 +280,8 @@
                         };
                     }))
                 };
+
+                //node.children = node.children.filter(child => !child.name.includes('Room Tag'));
 
                 nodes.push(node);
             }
