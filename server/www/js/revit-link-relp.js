@@ -144,13 +144,11 @@
             })
         }
 
-        async getRevitLinkedElementIds(rvtLinkExternalIdMap) {
-            const linkedElementIds = rvtLinkExternalIdMap.map(map => {
-                const { model, instanceId } = map;
-
-                const modelKey = model.getModelKey();
-                const externalIdMap = this.modelExternalIdMaps[modelKey];
-                const entities = Object.entries(externalIdMap);
+        async getRevitLinkedElementIds(rvtLinkExternalIds, model) {
+            const modelKey = model.getModelKey();
+            const externalIdMap = this.modelExternalIdMaps[modelKey];
+            const entities = Object.entries(externalIdMap);
+            const linkedElementIds = rvtLinkExternalIds.map(instanceId => {
                 return entities.filter(entity => entity[0].includes(`${instanceId}/`)).map(entity => entity[1]);
             })
                 .flat();
@@ -158,8 +156,8 @@
             return linkedElementIds;
         }
 
-        async getRevitHostElementIds(rvtLinkExternalIdMap, model) {
-            const linkedElementIds = await this.getRevitLinkedElementIds(rvtLinkExternalIdMap);
+        async getRevitHostElementIds(rvtLinkExternalIds, model) {
+            const linkedElementIds = await this.getRevitLinkedElementIds(rvtLinkExternalIds, model);
             const leafNodeIds = await this.getLeafNodes(null, model);
             const hostElementIds = leafNodeIds.filter(dbId => !linkedElementIds.includes(dbId));
 
@@ -177,11 +175,13 @@
             const rootNode = {
                 id: this.genGuid(),
                 externalId: '',
+                documentId: '',
                 type: 'root',
                 text: 'Root',
                 children: [
                     {
-                        id: aecData.documentId,
+                        id: this.genGuid(),
+                        documentId: aecData.documentId,
                         externalId: aecData.documentId,
                         type: 'revit-host-document',
                         text: model.getDocumentNode().getModelName(),
@@ -193,6 +193,7 @@
             const linksNodeGuid = this.genGuid();
             const linksNode = {
                 id: linksNodeGuid,
+                documentId: linksNodeGuid,
                 externalId: linksNodeGuid,
                 type: 'revit-links',
                 text: 'Links',
@@ -209,6 +210,7 @@
 
                 const node = {
                     id: rvtLink.documentId,
+                    documentId: rvtLink.documentId,
                     externalId: rvtLink.instanceId,
                     type: 'revit-linked-document',
                     text: rvtLinkName,
@@ -254,24 +256,14 @@
                     let dbIds = null;
                     if (data.node.type == 'revit-linked-document') {
                         const rvtLinkExternalId = data.node.original.externalId;
-                        dbIds = await this.getRevitLinkedElementIds([
-                            {
-                                instanceId: rvtLinkExternalId,
-                                model
-                            }
-                        ]);
+                        dbIds = await this.getRevitLinkedElementIds([rvtLinkExternalId], model);
                     } else if (data.node.type == 'revit-host-document' || data.node.type == 'revit-links') {
-                        const rvtLinkExternalIdMap = rvtLinks.map(rvtLink => {
-                            return {
-                                instanceId: rvtLink.instanceId,
-                                model
-                            };
-                        });
+                        const rvtLinkExternalIds = rvtLinks.map(rvtLink => rvtLink.instanceId);
 
                         if (data.node.type == 'revit-host-document') {
-                            dbIds = await this.getRevitHostElementIds(rvtLinkExternalIdMap, model);
+                            dbIds = await this.getRevitHostElementIds(rvtLinkExternalIds, model);
                         } else {
-                            dbIds = await this.getRevitLinkedElementIds(rvtLinkExternalIdMap, model);
+                            dbIds = await this.getRevitLinkedElementIds(rvtLinkExternalIds, model);
                         }
                     }
 
@@ -283,24 +275,14 @@
                     let dbIds = null;
                     if (data.node.type == 'revit-linked-document') {
                         const rvtLinkExternalId = data.node.original.externalId;
-                        dbIds = await this.getRevitLinkedElementIds([
-                            {
-                                instanceId: rvtLinkExternalId,
-                                model
-                            }
-                        ]);
+                        dbIds = await this.getRevitLinkedElementIds([rvtLinkExternalId], model);
                     } else if (data.node.type == 'revit-host-document' || data.node.type == 'revit-links') {
-                        const rvtLinkExternalIdMap = rvtLinks.map(rvtLink => {
-                            return {
-                                instanceId: rvtLink.instanceId,
-                                model
-                            };
-                        });
+                        const rvtLinkExternalIds = rvtLinks.map(rvtLink => rvtLink.instanceId);
 
                         if (data.node.type == 'revit-host-document') {
-                            dbIds = await this.getRevitHostElementIds(rvtLinkExternalIdMap, model);
+                            dbIds = await this.getRevitHostElementIds(rvtLinkExternalIds, model);
                         } else {
-                            dbIds = await this.getRevitLinkedElementIds(rvtLinkExternalIdMap, model);
+                            dbIds = await this.getRevitLinkedElementIds(rvtLinkExternalIds, model);
                         }
                     }
 
@@ -323,24 +305,14 @@
                         let dbIds = null;
                         if (data.node.type == 'revit-linked-document') {
                             const rvtLinkExternalId = data.node.original.externalId;
-                            dbIds = await this.getRevitLinkedElementIds([
-                                {
-                                    instanceId: rvtLinkExternalId,
-                                    model
-                                }
-                            ]);
+                            dbIds = await this.getRevitLinkedElementIds([rvtLinkExternalId], model);
                         } else if (data.node.type == 'revit-host-document' || data.node.type == 'revit-links') {
-                            const rvtLinkExternalIdMap = rvtLinks.map(rvtLink => {
-                                return {
-                                    instanceId: rvtLink.instanceId,
-                                    model
-                                };
-                            });
+                            const rvtLinkExternalIds = rvtLinks.map(rvtLink => rvtLink.instanceId);
 
                             if (data.node.type == 'revit-host-document') {
-                                dbIds = await this.getRevitHostElementIds(rvtLinkExternalIdMap, model);
+                                dbIds = await this.getRevitHostElementIds(rvtLinkExternalIds, model);
                             } else {
-                                dbIds = await this.getRevitLinkedElementIds(rvtLinkExternalIdMap, model);
+                                dbIds = await this.getRevitLinkedElementIds(rvtLinkExternalIds, model);
                             }
                         } else {
                             // Do nothing   
@@ -350,6 +322,7 @@
 
                         if (dbIds == null) return;
 
+                        dbIds.forEach(dbId => this.viewer.impl.highlightObjectNode(this.viewer.model, dbId, false));
                         this.viewer.isolate(dbIds);
                     }
                 });

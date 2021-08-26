@@ -35,6 +35,6 @@ $(document).ready(function () {
         };
 
         destroyViewer();
-        launchViewer('dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6ZXh0cmFjdC1hdXRvZGVzay1pby0yMDE3bGt3ZWo3eHBiZ3A2M3g0aGwzMzV5Nm0yNm9ha2dnb2YvcmFjX2hvdXNlLnppcA', null, viewerOptions);
+        launchViewer('dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6ZXh0cmFjdC1hdXRvZGVzay1pby0yMDE3bGt3ZWo3eHBiZ3A2M3g0aGwzMzV5Nm0yNm9ha2dnb2YvU21hbGxfTWVkaWNhbF9PZmZpY2VfQXJjaF8yMDIwLnppcA', 'b2dba70d-4039-4e7d-ab2e-8b2d5ff5fb31-000911d4', viewerOptions);
     });
 });
