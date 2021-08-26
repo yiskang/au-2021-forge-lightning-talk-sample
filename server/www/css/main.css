@@ -44,6 +44,13 @@ body {
     min-height: 530px;
 }
 
+.adn-rvt-link-relp-panel {
+    height: 245px;
+    width: 379px;
+    min-height: 245px;
+    min-width: 379px;
+}
+
 .adsk-viewing-viewer .adsk-icon-documentModels {
 	background-repeat: no-repeat !important;
 	background-size: 80% !important;

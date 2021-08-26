@@ -303,14 +303,33 @@
                         return (a1.text > b1.text) ? 1 : -1;
                     },
                     types: {
-                        groups: {
-                            'icon': 'glyphicon glyphicon-folder-open'
-                        },
-                        members: {
-                            'icon': 'glyphicon glyphicon-file'
-                        }
+                        groups: {},
+                        members: {}
                     },
-                    plugins: ['types', 'state', 'sort'],
+                    plugins: ['types', 'sort', 'wholerow'],
+                })
+                .on('hover_node.jstree', async (e, data) => {
+                    //console.log(data);
+                    if (data.node.type === 'groups') {
+                        const children = data.node.children;
+                        children.forEach(child => {
+                            let node = data.instance.get_node(child);
+                            this.viewer.impl.highlightObjectNode(this.viewer.model, node.original.dbId, true, false);
+                        });
+                    } else {
+                        this.viewer.impl.highlightObjectNode(this.viewer.model, data.node.original.dbId, true, false);
+                    }
+                })
+                .on('dehover_node.jstree', async (e, data) => {
+                    if (data.node.type === 'groups') {
+                        const children = data.node.children;
+                        children.forEach(child => {
+                            let node = data.instance.get_node(child);
+                            this.viewer.impl.highlightObjectNode(this.viewer.model, node.original.dbId, false);
+                        });
+                    } else {
+                        this.viewer.impl.highlightObjectNode(this.viewer.model, data.node.original.dbId, false);
+                    }
                 })
                 .on('changed.jstree', async (e, data) => {
                     // console.log(e, data);

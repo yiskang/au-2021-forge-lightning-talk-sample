@@ -18,6 +18,7 @@
 
 $(document).ready(function () {
     Autodesk.Viewing.theExtensionManager.registerExternalExtension('Autodesk.ADN.RevitGroupPanel', `${window.location.href}js/revit-group.js`);
+    Autodesk.Viewing.theExtensionManager.registerExternalExtension('Autodesk.ADN.RevitLinkRelpPanel', `${window.location.href}js/revit-link-relp.js`);
 
     $('button#rvt-group-btn').click((event) => {
         const viewerOptions = {
@@ -26,5 +27,14 @@ $(document).ready(function () {
 
         destroyViewer();
         launchViewer('dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6ZXh0cmFjdC1hdXRvZGVzay1pby0yMDE3bGt3ZWo3eHBiZ3A2M3g0aGwzMzV5Nm0yNm9ha2dnb2YvYXBhcnRtZW50LWdyb3VwLXNhbXBsZS5ydnQ', null, viewerOptions);
+    });
+
+    $('button#rvt-link-relp-btn').click((event) => {
+        const viewerOptions = {
+            extensions: ['Autodesk.ADN.RevitLinkRelpPanel']
+        };
+
+        destroyViewer();
+        launchViewer('dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6ZXh0cmFjdC1hdXRvZGVzay1pby0yMDE3bGt3ZWo3eHBiZ3A2M3g0aGwzMzV5Nm0yNm9ha2dnb2YvcmFjX2hvdXNlLnppcA', null, viewerOptions);
     });
 });
