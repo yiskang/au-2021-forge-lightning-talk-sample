@@ -25,7 +25,7 @@
 
             //  Height adjustment for scroll container, offset to height of the title bar and footer by default.
             if (!options.heightAdjustment)
-                options.heightAdjustment = 70;
+                options.heightAdjustment = 50 + 20;
 
             if (!options.marginTop)
                 options.marginTop = 0;
@@ -47,22 +47,94 @@
                 if (!this.uiCreated)
                     this.createUI();
             });
+
+            this.onButtonClicked = this.onButtonClicked.bind(this);
         }
 
         get viewer() {
             return this.parent.viewer;
         }
 
+        createSelectOptions(data, selector) {
+            if (!data || !selector || !(selector instanceof HTMLSelectElement))
+                return;
+
+            for (let i = 0; i < data.length; ++i) {
+                const linkOption = data[i];
+
+                const option = document.createElement('option');
+                option.value = linkOption.value;
+                option.text = linkOption.name;
+                selector.add(option);
+            }
+        }
+
         createUI() {
             if (this.uiCreated) return;
 
             this.uiCreated = true;
-            const div = document.createElement('div');
+            const table = document.createElement('table');
+            table.className = 'adsk-lmv-tftable adn-lvl-section-panel-table';
 
-            const treeDiv = document.createElement('div');
-            div.appendChild(treeDiv);
-            this.treeContainer = treeDiv;
-            this.scrollContainer.appendChild(div);
+            const tbody = document.createElement('tbody');
+            table.appendChild(tbody);
+            this.scrollContainer.appendChild(table);
+
+            const linkOptionRow = tbody.insertRow(-1);
+            const linkOptionSelectCell = linkOptionRow.insertCell(0);
+
+            const linkOptionSelector = document.createElement('select');
+            linkOptionSelector.id = 'adn-lnk-opt-selector';
+            linkOptionSelector.className = 'adn-option-selector';
+            linkOptionSelectCell.appendChild(linkOptionSelector);
+
+            let data = Object.entries(MultipleModelAlignmentType)
+                .map(entity => {
+                    return {
+                        name: entity[0],
+                        value: entity[1]
+                    }
+                });
+
+            data = data.splice(0, data.length - 1);
+            this.createSelectOptions(data, linkOptionSelector);
+
+            const buttonRow = tbody.insertRow(-1);
+            const buttonCell = buttonRow.insertCell(0);
+
+            const applyButton = document.createElement('button');
+            applyButton.type = 'button';
+            applyButton.textContent = 'Apply';
+            buttonCell.appendChild(applyButton);
+
+            applyButton.addEventListener(
+                'click',
+                this.onButtonClicked
+            );
+
+            this.resizeToContent();
+        }
+
+        setAlignment(alignment) {
+            if (this.parent.currentAlignment == alignment)
+                return false;
+
+            this.parent.currentAlignment = alignment;
+            return true;
+        }
+
+        onButtonClicked() {
+            const linkOptionSelector = document.getElementById('adn-lnk-opt-selector');
+            if (!linkOptionSelector) return;
+
+            const selectedIndex = linkOptionSelector.selectedIndex;
+            const selectedOption = linkOptionSelector.options[selectedIndex];
+            console.log(selectedOption, MultipleModelAlignmentType);
+
+            if (!this.setAlignment(Number(selectedOption.value))) return;
+
+            const modelData = [].concat(this.parent.modelData);
+            this.parent.loadModelMultiple(modelData, true);
         }
     }
 
@@ -72,10 +144,21 @@
 
             this.panel = null;
             this.modelAggregationTool = null;
-            this.modelData = null;
+            this.modelData = [];
             this.loadModelMultiple = this.loadModelMultiple.bind(this);
             this.createUI = this.createUI.bind(this);
             this.onToolbarCreated = this.onToolbarCreated.bind(this);
+        }
+
+        get currentAlignment() {
+            return this.modelAggregationTool.options.alignment;
+        }
+
+        set currentAlignment(alignment) {
+            if (!Object.values(MultipleModelAlignmentType).includes(alignment))
+                throw new Error(`Unsupported alignment: ${alignment}`);
+
+            this.modelAggregationTool.options.alignment = alignment;
         }
 
         onToolbarCreated() {
@@ -144,24 +227,19 @@
         clearModelData() {
             if (!this.modelData) return;
 
-            if (this.viewer.impl.hasModels()) {
-                const _conf = this.viewer.options;
-                this.viewer.tearDown();
-                this.viewer.setUp(_conf);
-            }
+            if (this.viewer.impl.hasModels())
+                this.viewer.impl.unloadCurrentModel();
 
             while (this.modelData.length > 0) {
                 this.modelData.pop();
             }
-
-            delete this.modelData;
-            this.modelData = null;
         }
 
-        loadModelMultiple(modelData) {
-            this.clearModelData();
+        loadModelMultiple(modelData, clear = false) {
+            if (clear)
+                this.clearModelData();
 
-            this.modelData = modelData;
+            this.modelData = this.modelData.concat(modelData);
             this.modelAggregationTool.processModels(modelData);
         }
 

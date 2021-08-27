@@ -52,17 +52,73 @@ body {
 }
 
 .adn-rvt-link-options-panel {
-    height: 245px;
-    width: 379px;
-    min-height: 245px;
-    min-width: 379px;
+    height: 180px;
+    width: 390px;
+    min-height: 180px;
+    min-width: 390px;
+}
+
+.adn-rvt-link-options-panel .docking-panel-scroll {
+    overflow-y: hidden;
+}
+
+.adn-rvt-link-options-panel .docking-panel-scroll table {
+    width: 100%;
+    height: 100%;
+}
+
+.adn-rvt-link-options-panel table td:first-child {
+    width: 30px;
+    color: #f3f7fb;
+}
+
+.adn-rvt-link-options-panel table td:last-child {
+    color: #bec8d2;
+}
+
+.adn-rvt-link-options-panel table tr:last-child {
+    text-align: center;
+}
+
+.adn-rvt-link-options-panel table tr:last-child button {
+    width: calc(100% - 75px);
+    height: 30px;
+    color: inherit;
+    line-height: 30px;
+}
+
+@media (max-width: 896px) {
+    .adn-rvt-link-options-panel table tr:last-child button {
+        width: calc(100% - 50px);
+    }
+}
+
+.adn-rvt-link-options-panel table tr:last-child button:focus,
+.adn-rvt-link-options-panel table tr:last-child button:hover {
+    color: grey;
+    border-color: #888;
+    outline: 0
+}
+
+.adn-option-selector {
+    width: calc(100% - 50px);
+    height: 20px;
+    margin-left: 5px;
+    margin-right: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-bottom: 0;
+}
+
+.adn-rvt-link-options-panel .docking-panel-footer-resizer {
+    display: none;
 }
 
 .adsk-viewing-viewer .adsk-icon-documentModels {
-	background-repeat: no-repeat !important;
-	background-size: 80% !important;
-	margin-left: 4px;
-	margin-top: 3px
+    background-repeat: no-repeat !important;
+    background-size: 80% !important;
+    margin-left: 4px;
+    margin-top: 3px
 }
 
 .jstree-default-dark .jstree-anchor {
@@ -70,19 +126,19 @@ body {
 }
 
 .adsk-viewing-viewer.dark-theme .adsk-icon-documentModels {
-	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E %3Ctitle%3Efolder-16%3C/title%3E %3Cg id='assets'%3E %3Cg id='Layer_201' data-name='Layer%25201'%3E %3Cpath fill='%23F4F4F4' d='M0,2.5V4H6.34l1-1-1-1H.5A.5.5,0,0,0,0,2.5ZM0,5v8a1,1,0,0,0,1,1H14a1,1,0,0,0,1-1V4a1,1,0,0,0-1-1H9L7,5Z'/%3E %3C/g%3E %3C/g%3E %3C/svg%3E")
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E %3Ctitle%3Efolder-16%3C/title%3E %3Cg id='assets'%3E %3Cg id='Layer_201' data-name='Layer%25201'%3E %3Cpath fill='%23F4F4F4' d='M0,2.5V4H6.34l1-1-1-1H.5A.5.5,0,0,0,0,2.5ZM0,5v8a1,1,0,0,0,1,1H14a1,1,0,0,0,1-1V4a1,1,0,0,0-1-1H9L7,5Z'/%3E %3C/g%3E %3C/g%3E %3C/svg%3E")
 }
 
 .adsk-viewing-viewer.dark-theme .adsk-icon-documentModels:hover,
 .adsk-viewing-viewer.dark-theme .active .adsk-icon-documentModels {
-	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E %3Ctitle%3Efolder-16%3C/title%3E %3Cg id='assets'%3E %3Cg id='Layer_201' data-name='Layer%25201'%3E %3Cpath fill='%2300BFFF' d='M0,2.5V4H6.34l1-1-1-1H.5A.5.5,0,0,0,0,2.5ZM0,5v8a1,1,0,0,0,1,1H14a1,1,0,0,0,1-1V4a1,1,0,0,0-1-1H9L7,5Z'/%3E %3C/g%3E %3C/g%3E %3C/svg%3E")
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E %3Ctitle%3Efolder-16%3C/title%3E %3Cg id='assets'%3E %3Cg id='Layer_201' data-name='Layer%25201'%3E %3Cpath fill='%2300BFFF' d='M0,2.5V4H6.34l1-1-1-1H.5A.5.5,0,0,0,0,2.5ZM0,5v8a1,1,0,0,0,1,1H14a1,1,0,0,0,1-1V4a1,1,0,0,0-1-1H9L7,5Z'/%3E %3C/g%3E %3C/g%3E %3C/svg%3E")
 }
 
 .adsk-viewing-viewer.light-theme .adsk-icon-documentModels {
-	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E %3Ctitle%3Efolder-16%3C/title%3E %3Cg id='assets'%3E %3Cg id='Layer_201' data-name='Layer%25201'%3E %3Cpath fill='black' d='M0,2.5V4H6.34l1-1-1-1H.5A.5.5,0,0,0,0,2.5ZM0,5v8a1,1,0,0,0,1,1H14a1,1,0,0,0,1-1V4a1,1,0,0,0-1-1H9L7,5Z'/%3E %3C/g%3E %3C/g%3E %3C/svg%3E")
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E %3Ctitle%3Efolder-16%3C/title%3E %3Cg id='assets'%3E %3Cg id='Layer_201' data-name='Layer%25201'%3E %3Cpath fill='black' d='M0,2.5V4H6.34l1-1-1-1H.5A.5.5,0,0,0,0,2.5ZM0,5v8a1,1,0,0,0,1,1H14a1,1,0,0,0,1-1V4a1,1,0,0,0-1-1H9L7,5Z'/%3E %3C/g%3E %3C/g%3E %3C/svg%3E")
 }
 
 .adsk-viewing-viewer.light-theme .adsk-icon-documentModels:hover,
 .adsk-viewing-viewer.light-theme .active .adsk-icon-documentModels {
-	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E %3Ctitle%3Efolder-16%3C/title%3E %3Cg id='assets'%3E %3Cg id='Layer_201' data-name='Layer%25201'%3E %3Cpath fill='%2300BFFF' d='M0,2.5V4H6.34l1-1-1-1H.5A.5.5,0,0,0,0,2.5ZM0,5v8a1,1,0,0,0,1,1H14a1,1,0,0,0,1-1V4a1,1,0,0,0-1-1H9L7,5Z'/%3E %3C/g%3E %3C/g%3E %3C/svg%3E")
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E %3Ctitle%3Efolder-16%3C/title%3E %3Cg id='assets'%3E %3Cg id='Layer_201' data-name='Layer%25201'%3E %3Cpath fill='%2300BFFF' d='M0,2.5V4H6.34l1-1-1-1H.5A.5.5,0,0,0,0,2.5ZM0,5v8a1,1,0,0,0,1,1H14a1,1,0,0,0,1-1V4a1,1,0,0,0-1-1H9L7,5Z'/%3E %3C/g%3E %3C/g%3E %3C/svg%3E")
 }
