@@ -25,7 +25,7 @@
         }
 
         userFunction(pdb, viewableId) {
-            console.log(pdb, viewableId);
+            //console.log(pdb, viewableId);
 
             let _nameAttrId = pdb.getAttrName();
             let _internalViewableInAttrId = pdb.getAttrViewableIn();
@@ -118,14 +118,14 @@
                     if (attrId === _internalMemberRefAttrId) {
                         const value = pdb.getAttrValue(attrId, valId);
                         const props = pdb.getObjectProperties(value);
-                        console.log(value, pdb.getObjectProperties(value));
+                        //console.log(value, pdb.getObjectProperties(value));
                         if (props.name.includes('Room Tag'))
                             return;
 
                         pdb.enumObjectProperties(value, function (childAttrId, childAttrValId) {
                             if (childAttrId === _internalViewableInAttrId) {
                                 const childAttrVal = pdb.getAttrValue(childAttrId, childAttrValId);
-                                console.log(value, childAttrVal);
+                                //console.log(value, childAttrVal);
 
                                 if ((childAttrVal == viewableId) && (!children.includes(value))) {
                                     children.push(value);
@@ -344,6 +344,13 @@
                     } else {
                         this.viewer.impl.highlightObjectNode(this.viewer.model, data.node.original.dbId, false);
                     }
+
+                    const selSet = this.viewer.getSelection();
+                    if (selSet.length > 0) {
+                        this.viewer.clearSelection();
+                        this.viewer.impl.clearOverlay('selection');
+                        this.viewer.select(selSet);
+                    }
                 })
                 .on('changed.jstree', async (e, data) => {
                     // console.log(e, data);
@@ -352,6 +359,7 @@
                     }
 
                     this.viewer.clearSelection();
+                    this.viewer.impl.clearOverlay('selection');
 
                     if (data.action === 'select_node') {
                         let dbIds = null;
@@ -362,11 +370,12 @@
                                 let node = data.instance.get_node(child);
                                 return node.original.dbId;
                             });
+                            this.viewer.select(data.node.original.dbId);
                         } else {
                             dbIds = [data.node.original.dbId];
+                            this.viewer.select(dbIds);
                         }
 
-                        dbIds.forEach(dbId => this.viewer.impl.highlightObjectNode(this.viewer.model, dbId, false));
                         this.viewer.fitToView(dbIds);
                         this.viewer.isolate(dbIds);
                     }
