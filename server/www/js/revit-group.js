@@ -445,7 +445,7 @@
         createUI() {
             const viewer = this.viewer;
 
-            const rvtGroupPanel = new AdnRevitGroupPanel(viewer, 'Revit Group');
+            const rvtGroupPanel = new AdnRevitGroupPanel(viewer, 'Revit Groups');
 
             viewer.addPanel(rvtGroupPanel);
             this.panel = rvtGroupPanel;

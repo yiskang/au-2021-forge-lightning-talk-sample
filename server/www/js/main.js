@@ -17,19 +17,23 @@
 /////////////////////////////////////////////////////////////////////
 
 $(document).ready(function () {
-    Autodesk.Viewing.theExtensionManager.registerExternalExtension('Autodesk.ADN.RevitGroupPanel', `${window.location.href}js/revit-group.js`);
-    Autodesk.Viewing.theExtensionManager.registerExternalExtension('Autodesk.ADN.RevitLinkRelpPanel', `${window.location.href}js/revit-link-relp.js`);
+    const baseUrl = window.location.href.split('?')[0];
+    Autodesk.Viewing.theExtensionManager.registerExternalExtension('Autodesk.ADN.RevitAggregationHelper', `${baseUrl}js/revit-aggregation.js`);
+    Autodesk.Viewing.theExtensionManager.registerExternalExtension('Autodesk.ADN.RevitGroupPanel', `${baseUrl}js/revit-group.js`);
+    Autodesk.Viewing.theExtensionManager.registerExternalExtension('Autodesk.ADN.RevitLinkRelpPanel', `${baseUrl}js/revit-link-relp.js`);
 
-    $('button#rvt-group-btn').click((event) => {
+    $('button#rvt-aggregate-btn').click((event) => {
         $('button.button-primary').removeClass('button-primary');
-        $('button#rvt-group-btn').addClass('button-primary');
+        $('button#rvt-aggregate-btn').addClass('button-primary');
 
-        const viewerOptions = {
-            extensions: ['Autodesk.ADN.RevitGroupPanel']
-        };
+        const modelData = [
+            { name: 'Small_Medical_Office_Arch_2020.rvt', urn: 'urn:dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6OWR5YXI1enNtZ2NsaWJiYWVuaHQ5YmFjaWYyMnpvN3ctc2FuZGJveC9TbWFsbF9NZWRpY2FsX09mZmljZV9BcmNoXzIwMjAucnZ0' },
+            { name: 'Small_Medical_Office_MEP_2020v2.rvt', urn: 'urn:dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6OWR5YXI1enNtZ2NsaWJiYWVuaHQ5YmFjaWYyMnpvN3ctc2FuZGJveC9TbWFsbF9NZWRpY2FsX09mZmljZV9NRVBfMjAyMHYyLnJ2dA' },
+            { name: 'Small_Medical_Office_Struct_2020.rvt', urn: 'urn:dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6OWR5YXI1enNtZ2NsaWJiYWVuaHQ5YmFjaWYyMnpvN3ctc2FuZGJveC9TbWFsbF9NZWRpY2FsX09mZmljZV9TdHJ1Y3RfMjAyMC5ydnQ' }
+        ];
 
         destroyViewer();
-        launchViewer('dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6OWR5YXI1enNtZ2NsaWJiYWVuaHQ5YmFjaWYyMnpvN3ctc2FuZGJveC9hcGFydG1lbnQtZ3JvdXAtc2FtcGxlLnJ2dA', null, viewerOptions);
+        launchAggregateViewer(modelData, null);
     });
 
     $('button#rvt-link-relp-btn').click((event) => {
@@ -42,5 +46,17 @@ $(document).ready(function () {
 
         destroyViewer();
         launchViewer('dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6OWR5YXI1enNtZ2NsaWJiYWVuaHQ5YmFjaWYyMnpvN3ctc2FuZGJveC9TbWFsbF9NZWRpY2FsX09mZmljZV9BcmNoXzIwMjAuemlw', 'b2dba70d-4039-4e7d-ab2e-8b2d5ff5fb31-000911d4', viewerOptions);
+    });
+
+    $('button#rvt-group-btn').click((event) => {
+        $('button.button-primary').removeClass('button-primary');
+        $('button#rvt-group-btn').addClass('button-primary');
+
+        const viewerOptions = {
+            extensions: ['Autodesk.ADN.RevitGroupPanel']
+        };
+
+        destroyViewer();
+        launchViewer('dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6OWR5YXI1enNtZ2NsaWJiYWVuaHQ5YmFjaWYyMnpvN3ctc2FuZGJveC9hcGFydG1lbnQtZ3JvdXAtc2FtcGxlLnJ2dA', null, viewerOptions);
     });
 });

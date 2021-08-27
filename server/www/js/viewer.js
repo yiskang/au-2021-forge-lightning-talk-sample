@@ -59,6 +59,36 @@ function launchViewer(urn, viewableId = null, viewerOptions = null) {
     }
 }
 
+function launchAggregateViewer(modelData, viewerOptions = null) {
+    const options = {
+        env: 'MD20Prod',
+        api: 'D3S',
+        getAccessToken: getForgeToken
+    };
+
+    if (LMV_VIEWER_VERSION >= '7.48') {
+        options.env = 'AutodeskProduction2';
+        options.api = 'streamingV2';
+    }
+
+    let viewer;
+
+    Autodesk.Viewing.Initializer(options, async () => {
+        viewerOptions = { extensions: ['Autodesk.ADN.RevitAggregationHelper'] };
+        if (!viewerOptions) {
+            viewer = new Autodesk.Viewing.GuiViewer3D(document.getElementById('forgeViewer'));
+        } else {
+            viewer = new Autodesk.Viewing.GuiViewer3D(document.getElementById('forgeViewer'), viewerOptions);
+        }
+
+        viewer.start();
+        const ext = await viewer.loadExtension('Autodesk.ADN.RevitAggregationHelper');
+        await ext.ensureLibrariesDownloaded();
+
+        viewer.loadModelMultiple(modelData);
+    });
+}
+
 function getForgeToken(callback) {
     fetch('/api/forge/oauth/token').then(res => {
         res.json().then(data => {
