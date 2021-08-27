@@ -44,7 +44,7 @@ function launchViewer(urn, viewableId = null, viewerOptions = null) {
 
     function onDocumentLoadSuccess(doc) {
         // if a viewableId was specified, load that view, otherwise the default view
-        const viewables = (viewableId ? doc.getRoot().findByGuid(viewableId) : doc.getRoot().getDefaultGeometry(true));
+        const viewables = (viewableId ? doc.getRoot().findByGuid(viewableId) : doc.getRoot().getDefaultGeometry());
         viewer.loadDocumentNode(doc, viewables, { skipHiddenFragments: false }).then(async (model) => {
             // documented loaded, any action?
             console.log({

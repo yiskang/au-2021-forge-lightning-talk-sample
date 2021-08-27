@@ -19,6 +19,41 @@
 'use strict';
 
 (function () {
+    const Utility = {
+        /**
+         * Rest an object
+         * @param {Object} obj An object to be reset.
+         * ref: https://stackoverflow.com/a/24090180
+         */
+        resetObject: function (obj) {
+            for (let key in Object.getOwnPropertyNames(obj)) {
+                if (!obj.hasOwnProperty(key)) continue;
+
+                let val = obj[key];
+                switch (typeof val) {
+                    case 'string':
+                        obj[key] = ''; break;
+                    case 'number':
+                        obj[key] = 0; break;
+                    case 'boolean':
+                        obj[key] = false; break;
+                    case 'object':
+                        if (val === null) break;
+                        if (val instanceof Array) {
+                            while (obj[key].length > 0) {
+                                obj[key].pop();
+                            }
+                            break;
+                        }
+                        val = {};
+                        //Or recursively clear the sub-object
+                        //resetObject(val);
+                        break;
+                }
+            }
+        }
+    };
+
     class AdnRevitLinkRelpPanel extends Autodesk.Viewing.UI.DockingPanel {
         constructor(viewer, title, options) {
             options = options || {};
@@ -40,6 +75,7 @@
             this.options = options;
             this.uiCreated = false;
             this.modelExternalIdMaps = {};
+            this.modelLinkRelationshipCache = {};
 
             this.addVisibilityListener((show) => {
                 if (!show) return;
@@ -47,6 +83,12 @@
                 if (!this.uiCreated)
                     this.createUI();
             });
+
+            this.onShowAll = this.onShowAll.bind(this);
+        }
+
+        onShowAll() {
+            $(this.treeContainer).jstree().deselect_all(true);
         }
 
         async buildExternalIdMaps() {
@@ -256,14 +298,12 @@
                     let dbIds = null;
                     if (data.node.type == 'revit-linked-document') {
                         const rvtLinkExternalId = data.node.original.externalId;
-                        dbIds = await this.getRevitLinkedElementIds([rvtLinkExternalId], model);
+                        dbIds = this.modelLinkRelationshipCache['links'][rvtLinkExternalId];
                     } else if (data.node.type == 'revit-host-document' || data.node.type == 'revit-links') {
-                        const rvtLinkExternalIds = rvtLinks.map(rvtLink => rvtLink.instanceId);
-
                         if (data.node.type == 'revit-host-document') {
-                            dbIds = await this.getRevitHostElementIds(rvtLinkExternalIds, model);
-                        } else {
-                            dbIds = await this.getRevitLinkedElementIds(rvtLinkExternalIds, model);
+                            dbIds = this.modelLinkRelationshipCache['host'];
+                            // } else {
+                            //     dbIds = Object.values(this.modelLinkRelationshipCache['links']).flat();
                         }
                     }
 
@@ -275,14 +315,12 @@
                     let dbIds = null;
                     if (data.node.type == 'revit-linked-document') {
                         const rvtLinkExternalId = data.node.original.externalId;
-                        dbIds = await this.getRevitLinkedElementIds([rvtLinkExternalId], model);
+                        dbIds = this.modelLinkRelationshipCache['links'][rvtLinkExternalId];
                     } else if (data.node.type == 'revit-host-document' || data.node.type == 'revit-links') {
-                        const rvtLinkExternalIds = rvtLinks.map(rvtLink => rvtLink.instanceId);
-
                         if (data.node.type == 'revit-host-document') {
-                            dbIds = await this.getRevitHostElementIds(rvtLinkExternalIds, model);
-                        } else {
-                            dbIds = await this.getRevitLinkedElementIds(rvtLinkExternalIds, model);
+                            dbIds = this.modelLinkRelationshipCache['host'];
+                            // } else {
+                            //     dbIds = Object.values(this.modelLinkRelationshipCache['links']).flat();
                         }
                     }
 
@@ -300,19 +338,17 @@
                         this.viewer.clearSelection();
                         this.viewer.isolate();
 
-                        console.log(data.node.type, data.node);
+                        // console.log(data.node.type, data.node);
 
                         let dbIds = null;
                         if (data.node.type == 'revit-linked-document') {
                             const rvtLinkExternalId = data.node.original.externalId;
-                            dbIds = await this.getRevitLinkedElementIds([rvtLinkExternalId], model);
+                            dbIds = this.modelLinkRelationshipCache['links'][rvtLinkExternalId];
                         } else if (data.node.type == 'revit-host-document' || data.node.type == 'revit-links') {
-                            const rvtLinkExternalIds = rvtLinks.map(rvtLink => rvtLink.instanceId);
-
                             if (data.node.type == 'revit-host-document') {
-                                dbIds = await this.getRevitHostElementIds(rvtLinkExternalIds, model);
+                                dbIds = this.modelLinkRelationshipCache['host'];
                             } else {
-                                dbIds = await this.getRevitLinkedElementIds(rvtLinkExternalIds, model);
+                                dbIds = Object.values(this.modelLinkRelationshipCache['links']).flat();
                             }
                         } else {
                             // Do nothing   
@@ -326,6 +362,13 @@
                         this.viewer.isolate(dbIds);
                     }
                 });
+
+            const rvtLinkExternalIds = rvtLinks.map(rvtLink => rvtLink.instanceId);
+            this.modelLinkRelationshipCache['host'] = await this.getRevitHostElementIds(rvtLinkExternalIds, model);
+            this.modelLinkRelationshipCache['links'] = {};
+            rvtLinkExternalIds.forEach(async instanceId => {
+                this.modelLinkRelationshipCache['links'][instanceId] = await this.getRevitLinkedElementIds([instanceId], model)
+            });
 
             this.resizeToContent();
         }
@@ -350,6 +393,28 @@
                     { once: true }
                 );
             }
+
+            this.viewer.addEventListener(
+                Autodesk.Viewing.SHOW_ALL_EVENT,
+                this.onShowAll
+            )
+        }
+
+        uninitialize() {
+            Utility.resetObject(this.modelExternalIdMaps);
+            delete this.modelExternalIdMaps;
+            this.modelExternalIdMaps = null;
+
+            Utility.resetObject(this.modelLinkRelationshipCache);
+            delete this.modelLinkRelationshipCache;
+            this.modelLinkRelationshipCache = null;
+
+            this.viewer.removeEventListener(
+                Autodesk.Viewing.SHOW_ALL_EVENT,
+                this.onShowAll
+            )
+
+            super.uninitialize();
         }
     }
 

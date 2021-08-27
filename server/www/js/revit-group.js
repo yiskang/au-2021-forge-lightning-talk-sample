@@ -207,6 +207,12 @@
                 if (!this.uiCreated)
                     this.createUI();
             });
+
+            this.onShowAll = this.onShowAll.bind(this);
+        }
+
+        onShowAll() {
+            $(this.treeContainer).jstree().deselect_all(true);
         }
 
         get tool() {
@@ -286,6 +292,14 @@
                 nodes.push(node);
             }
 
+            // if (nodes.length > 0) {
+            //     nodes.sort((a, b) => {
+            //         return (a.text > b.text) ? 1 : -1;
+            //     });
+
+            //     nodes[0].state = { 'opened': true };
+            // }
+
             $(this.treeContainer)
                 .jstree({
                     core: {
@@ -340,19 +354,21 @@
                     this.viewer.clearSelection();
 
                     if (data.action === 'select_node') {
+                        let dbIds = null;
+
                         if (data.node.type === 'groups') {
                             const children = data.node.children;
-                            const dbIds = children.map(child => {
+                            dbIds = children.map(child => {
                                 let node = data.instance.get_node(child);
                                 return node.original.dbId;
                             });
-                            this.viewer.select(dbIds);
-                            this.viewer.fitToView(dbIds);
                         } else {
-                            const dbId = data.node.original.dbId;
-                            this.viewer.select(dbId);
-                            this.viewer.fitToView([dbId]);
+                            dbIds = [data.node.original.dbId];
                         }
+
+                        dbIds.forEach(dbId => this.viewer.impl.highlightObjectNode(this.viewer.model, dbId, false));
+                        this.viewer.fitToView(dbIds);
+                        this.viewer.isolate(dbIds);
                     }
                 });
 
@@ -379,11 +395,21 @@
                     { once: true }
                 );
             }
+
+            this.viewer.addEventListener(
+                Autodesk.Viewing.SHOW_ALL_EVENT,
+                this.onShowAll
+            )
         }
 
         uninitialize() {
             if (this.tool)
                 this.viewer.unloadExtension('Autodesk.ADN.AdnRevitGroupTool');
+
+            this.viewer.removeEventListener(
+                Autodesk.Viewing.SHOW_ALL_EVENT,
+                this.onShowAll
+            );
 
             super.uninitialize();
         }
@@ -396,10 +422,15 @@
             this.panel = null;
             this.createUI = this.createUI.bind(this);
             this.onToolbarCreated = this.onToolbarCreated.bind(this);
+            this.onGeometriesLoaded = this.onGeometriesLoaded.bind(this);
         }
 
         onToolbarCreated() {
             this.createUI();
+        }
+
+        onGeometriesLoaded() {
+            this.viewer.getExtension('Autodesk.ViewCubeUi')?.setViewCube('front/top/right');
         }
 
         createUI() {
@@ -436,6 +467,15 @@
             if (this.viewer.toolbar) {
                 // Toolbar is already available, create the UI
                 this.createUI();
+            }
+
+            if ((!this.viewer.model) || (!this.viewer.model.isLoadDone())) {
+                this.viewer.addEventListener(
+                    Autodesk.Viewing.GEOMETRY_LOADED_EVENT,
+                    this.onGeometriesLoaded,
+                    { once: true });
+            } else {
+                this.onGeometriesLoaded();
             }
 
             return true;
