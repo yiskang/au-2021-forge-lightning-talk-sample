@@ -16,7 +16,14 @@ This sample is for a Forge lightning talk section: `Aggregation, linked models a
 
 ## Thumbnail
 
-![thumbnail](img/thumbnail.png)
+- **Multiple Model Aggregation:** Revit link options in Forge Viewer
+![thumbnail-1](thumbnail-1.png)
+
+- **Revit link Relationship**: Show host and linked RVT file hierarchy for a composite Revit model in Forge Viewer.
+![thumbnail-2](thumbnail-2.png)
+
+- **Revit Groups**: Rebuild Revit group's member relationships in Forge Viewer.
+![thumbnail-3](thumbnail-3.png)
 
 # Setup
 
@@ -77,7 +84,5 @@ This sample is licensed under the terms of the [MIT License](http://opensource.o
 Please see the [LICENSE](LICENSE) file for full details.
 
 ## Written by
-
-Augusto Goncalves [@augustomaia](https://twitter.com/augustomaia), [Forge Partner Development](http://forge.autodesk.com)
 
 Eason Kang [@yiskang](https://twitter.com/yiskang), [Forge Partner Development](http://forge.autodesk.com)
