@@ -577,8 +577,8 @@ Session.vim
 tags
 
 ### Autodesk Forge ###
-/models/*
-!/models/empty
+# /models/*
+# !/models/empty
 
 
 # End of https://www.gitignore.io/api/linux,macos,windows,aspnetcore,visualstudio,visualstudiocode
