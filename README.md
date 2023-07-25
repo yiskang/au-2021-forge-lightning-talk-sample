@@ -12,7 +12,11 @@
 
 # Description
 
-This sample is for a Forge lightning talk section: `Aggregation, linked models and group: advanced Revit model viewing in Forge` in AU 2021.
+This sample is for a Forge lightning talk section: `Aggregation, linked models and group: advanced Revit model viewing in Forge` in AU 2021. See the video here: https://youtu.be/nfHZLlWtQ-0
+
+- **Multiple Model Aggregation:**
+- **Revit link Relationship**
+- **Revit Groups**
 
 ## Thumbnail
 
